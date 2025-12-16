@@ -2,12 +2,12 @@ name: Flutter iOS Build
 
 on:
   push:
-    branches: [ main ]  # Change to your default branch if needed
-  workflow_dispatch:  # Allows manual trigger
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build-ios:
-    runs-on: macos-latest  # Or macos-15 for newest Xcode (as of Dec 2025)
+    runs-on: macos-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -15,17 +15,23 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable  # Or 'beta' if you use that
-          architecture: x64  # Default for macOS runners
+          channel: stable
+          architecture: x64 
 
       - name: Get Flutter dependencies
         run: flutter pub get
 
+      - name: Clean iOS (extra safety)
+          run: |
+            cd ios
+            rm -rf Pods Podfile.lock .symlinks
+            pod install  # Installs fresh pods
+
       - name: Build iOS (unsigned)
-        run: flutter build ios --release --no-codesign  # Compiles without signing—verifies everything works
+        run: flutter build ios --release --no-codesign
 
       - name: Upload build artifacts (optional)
         uses: actions/upload-artifact@v4
         with:
           name: ios-build-archive
-          path: build/ios/archive/  # Logs will show if successful; artifacts for download
+          path: build/ios/archive/
