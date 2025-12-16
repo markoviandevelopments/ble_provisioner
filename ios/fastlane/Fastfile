@@ -19,7 +19,8 @@ platform :ios do
       scheme: "Runner",
       export_method: "app-store",
       output_directory: "../build/ios/ipa",
-      output_name: "XH-C2X-Provisioner.ipa"
+      output_name: "XH-C2X-Provisioner.ipa",
+      xcodebuild_args: "-allowProvisioningUpdates"
     )
   end
 end
