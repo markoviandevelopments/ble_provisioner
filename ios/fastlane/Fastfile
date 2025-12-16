@@ -1,0 +1,26 @@
+default_platform(:ios)
+
+platform :ios do
+  lane :build_signed_ipa do
+    # Load API key for authentication
+    api_key = app_store_connect_api_key(
+      key_id: ENV["ASC_KEY_ID"],
+      issuer_id: ENV["ASC_ISSUER_ID"],
+      key_content: ENV["ASC_PRIVATE_KEY"]
+    )
+
+    update_code_signing_settings(
+      use_automatic_signing: true,
+      team_id: "3SM742MGC4",
+      targets: ["Runner"]
+    )
+
+    build_app(
+      scheme: "Runner",
+      export_method: "app-store",
+      output_directory: "../build/ios/ipa",
+      output_name: "XH-C2X-Provisioner.ipa",
+      api_key: api_key
+    )
+  end
+end
